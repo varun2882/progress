@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+   
+    - name: Update Repository index (Ubuntu)
+      tags: always
+      apt:
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+- hosts: grp01
+  become: true
+  roles: 
+     - web_server
+  
+- hosts: grp02
+  become: true
+  roles:
+    - db_server
+
+- hosts: grp03
+  become: true
+  roles:
+    - file_server

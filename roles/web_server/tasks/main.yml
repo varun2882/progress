@@ -1,0 +1,8 @@
+- name: install apache2 package
+  tags: http
+  apt:
+    name:
+      - apache2
+      - libapache2-mod-php
+    state: latest
+  when: ansible_distribution == "Ubuntu"

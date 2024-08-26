@@ -1,0 +1,11 @@
+[grp01]
+
+192.168.1.10 apache_package=apache2 php_package=libapache2-mod-php
+
+[grp02]
+
+192.168.1.20
+
+[grp03]
+
+172.23.109.43

@@ -1,0 +1,82 @@
+---
+ 
+ - hosts: all
+   become: true
+   tasks:
+
+   - name: install updates (Ubuntu)
+     apt:
+       upgrade: dist
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu" 
+ 
+ - hosts: all
+   become: true
+   tasks:
+    
+   - name: add user Maahi
+     tags: always
+     user:  
+       name: maahi
+       groups: root
+   
+   - name: add sudoers file for Maahi
+     tags: always
+     copy:
+       src: sudoer_maahi
+       dest: /etc/sudoers.d/maahi
+       owner: root
+       group: root
+       mode: 0440
+
+ - hosts: grp01
+   become: yes
+   tasks:
+     
+   - name: install apache and php for Ubuntu servers
+     apt:
+       name:
+         - apache2
+         - libapache2-mod-php
+       state: latest
+     when: ansible_distribution == "Ubuntu"
+   
+   - name: start apache2 (Ubuntu)
+     service:
+       name: apache2
+       state: started
+
+   - name: copy default html
+     tags: apache
+     copy:
+       src: default_site.html
+       dest: /var/www/html/index.html
+       owner: root
+       group: root
+       mode: 0644    
+
+ - hosts: grp02
+   become: yes
+   tasks: 
+   - name: install mariadb package
+     apt:
+       name: mariadb-server 
+       state: latest
+     when: ansible_distribution == "Ubuntu"
+
+ - hosts: grp03
+   become: yes
+   tasks:
+
+   - name: install uzip
+     package:
+       name: unzip
+
+   - name:
+     unarchive:
+       src: https://releases.hashicorp.com/terraform/1.9.4/terraform_1.9.4_linux_386.zip
+       dest: /usr/local/bin
+       remote_src: yes
+       mode: 0755
+       owner: root
+       group: root  
